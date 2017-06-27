@@ -1,0 +1,30 @@
+#!/bin/sh
+
+sudo chmod 755 annotation.scr
+
+# To use:
+# ./annotation [FILE] [EVAL] [WSIZE]
+
+FILE=$1
+EVAL=$2
+WSIZE=$3
+
+echo $FILE
+echo $EVAL
+echo $WSIZE
+
+blastp -query $FILE -db ../formatted/sprot/uniprot_sprot -out blastp2sprot -outfmt 7 -evalue $EVAL -gapopen 11 -gapextend 1 -word_size $WSIZE -matrix BLOSUM62 -num_threads 4
+
+blastp -query $FILE -db ../formatted/trembl/uniprot_trembl -out blastp2trembl -outfmt 7 -evalue $EVAL -gapopen 11 -gapextend 1 -word_size $WSIZE -matrix BLOSUM62 -num_threads 4
+
+blastp -query $FILE -db ../formatted/nr/nr -out blastp2nr -outfmt 5 -evalue $EVAL -gapopen 11 -gapextend 1 -word_size $WSIZE -matrix BLOSUM62 -num_threads 4
+
+python parse_blast.py PARSEDblastp2nr.txt blastp2nr
+
+chmod a+x BlastParse.pl   
+
+perl BlastParse.pl blastp2nr >> PARSEDblastp2nr.txt
+
+mkdir UniProt_flatfiles
+
+python totalannotation.py $FILE PARSEDblastp2nr.txt nrcolumnheadersandbadwords.txt blastp2sprot blastp2trembl 1E-4 UniProt_flatfiles annotated.txt

@@ -1,0 +1,2 @@
+Query Name	Query Length	Subject Name	Subject Length	Alignment Length	Query Start	Query End	Subject Start	Subject End	Query Sequence	Subject Sequence	Hsp Score	Hsp Expect	Hsp Identities	Percent Match	Number_of_gaps
+predicted	PREDICTED	hypothetical	unknown
